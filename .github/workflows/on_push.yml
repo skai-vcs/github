@@ -1,0 +1,23 @@
+name: On-push workflow
+
+run-name: ${{ (github.event.pull_request.merged || github.event_name == 'workflow_dispatch') && format('Deployment for {0}', (github.event.pull_request.base.ref == 'main' && 'Prod' || github.ref_name == 'staging' && 'Staging' || github.ref_name)) || 'Deployment Skipped ' }}
+  
+
+on:
+  workflow_dispatch:
+  pull_request_target:
+    branches:
+      - main
+      - staging
+    types:
+      - closed
+
+jobs:
+  RunReusableWorkflowOnPush:
+    permissions:
+      id-token: write
+      contents: write
+      actions: read
+    name: Project workflow
+    uses: skai-vcs/ops-actions-workflows/.github/workflows/github-on-push.yml@main
+    secrets: inherit

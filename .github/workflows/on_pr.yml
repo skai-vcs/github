@@ -1,0 +1,22 @@
+name: On-pr workflow
+
+run-name: Check for PR ${{ github.event.pull_request.title }}
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  RunReusableWorkflowOnPR:
+    if: github.event_name == 'pull_request'
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: read
+      actions: read
+    name: Project workflow
+    uses: skai-vcs/ops-actions-workflows/.github/workflows/github-on-pr.yml@main
+    secrets: inherit
